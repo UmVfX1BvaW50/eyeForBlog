@@ -3,12 +3,18 @@ package com.re.eyeforblog;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
+import android.content.ClipData;
+import android.content.ClipboardManager;
+import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -25,6 +31,21 @@ public class viewActivity extends AppCompatActivity {
 
         titleTextView = findViewById(R.id.titleTextView);
         urlListView = findViewById(R.id.urlListView);
+        urlListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                // 获取被长按的文本
+                String text = ((TextView) view).getText().toString();
+
+                // 执行复制文本的操作
+                ClipboardManager clipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+                ClipData clip = ClipData.newPlainText("label", text);
+                clipboard.setPrimaryClip(clip);
+                Toast.makeText(viewActivity.this,"复制成功",Toast.LENGTH_SHORT).show();
+                // 返回 true 表示该事件已被处理
+                return true;
+            }
+        });
         databaseHelper = new DataDBHelper(this);
         displayUrls();
     }
